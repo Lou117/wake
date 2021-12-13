@@ -1,16 +1,21 @@
 {
     "name": "lou117/wake",
     "description": "Web-Application KErnel, PHP micro-framework",
-    "minimum-stability": "stable",
+    "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/lou117/wake",
     "authors": [
         {
             "name": "Sylvain Glaçon",
-            "email": "sylvain.glacon@gmail.com"
+            "email": "sylvain.glacon@gmail.com",
+            "role": "Lead developer"
         }
     ],
+    "support": {
+        "source": "https://github.com/Lou117/wake"
+    },
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "guzzlehttp/psr7": "^2.1",
         "psr/http-server-handler": "^1.0",
         "psr/container": "^2.0",
@@ -20,8 +25,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Lou117\\Wake\\": "src/",
-            "Test\\": "test/"
+            "Lou117\\Wake\\": "src/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
     }
 }
