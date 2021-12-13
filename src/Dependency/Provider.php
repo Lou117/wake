@@ -1,9 +1,9 @@
 <?php
-namespace Lou117\Wake;
+namespace Lou117\Wake\Dependency;
 
 use Lou117\Wake\Container\Container;
 
-class DependencyProvider
+class Provider
 {
     /**
      * @var Container
