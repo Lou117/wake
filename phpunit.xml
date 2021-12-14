@@ -5,6 +5,8 @@
             <file>tests/Configuration/JSONFileLoaderTest.php</file>
             <file>tests/Configuration/PHPFileLoaderTest.php</file>
             <file>tests/Container/ContainerTest.php</file>
+            <!-- ResolverTest depends on ContainerTest -->
+            <file>tests/Dependency/ResolverTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

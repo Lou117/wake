@@ -7,6 +7,7 @@ use Lou117\Wake\Container\NotFoundException;
 class ContainerTest extends TestCase
 {
     /**
+     * @covers \Lou117\Wake\Container\Container::__construct
      * @covers \Lou117\Wake\Container\Container::set
      * @covers \Lou117\Wake\Container\Container::get
      * @return void
@@ -20,6 +21,7 @@ class ContainerTest extends TestCase
     }
 
     /**
+     * @covers \Lou117\Wake\Container\Container::__construct
      * @covers \Lou117\Wake\Container\Container::set
      * @covers \Lou117\Wake\Container\Container::has
      * @return void
@@ -32,6 +34,7 @@ class ContainerTest extends TestCase
     }
 
     /**
+     * @covers \Lou117\Wake\Container\Container::__construct
      * @covers \Lou117\Wake\Container\Container::has
      * @return void
      */
@@ -42,6 +45,7 @@ class ContainerTest extends TestCase
     }
 
     /**
+     * @covers \Lou117\Wake\Container\Container::__construct
      * @covers \Lou117\Wake\Container\Container::get
      * @return void
      */
