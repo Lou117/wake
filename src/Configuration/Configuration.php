@@ -21,7 +21,6 @@ class Configuration
         $this->configuration = self::getDefaultConfiguration();
     }
 
-
     /**
      * Returns value associated with given `$configuration_directive`.
      *
@@ -34,7 +33,27 @@ class Configuration
             return $this->configuration[$configuration_directive];
         }
 
-        // handle JS notation
+        if (str_contains($configuration_directive, ".")) {
+            $chunks = explode(".", $configuration_directive);
+            $cursor = $this->configuration;
+
+            for ($i = 0; $i < count($chunks); $i++) {
+                $isLast = ($i + 1 === count($chunks));
+
+                if ($isLast === false) {
+                    if (array_key_exists($chunks[$i], $cursor)) {
+                        $cursor = $cursor[$chunks[$i]];
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return (array_key_exists($chunks[$i], $cursor))
+                        ? $cursor[$chunks[$i]]
+                        : null;
+                }
+            }
+        }
+
         return null;
     }
 
@@ -80,7 +99,10 @@ class Configuration
     public function import(array $configuration_array): self
     {
         $this->configuration = array_replace_recursive($this->configuration, $configuration_array);
-        $this->configuration[self::DIRECTIVE_MIDDLEWARE_SEQUENCE] = array_values($this->configuration[self::DIRECTIVE_MIDDLEWARE_SEQUENCE]);
+        $this->configuration[self::DIRECTIVE_MIDDLEWARE_SEQUENCE] = array_values($this->configuration[
+            self::DIRECTIVE_MIDDLEWARE_SEQUENCE
+        ]);
+
         return $this;
     }
 }
