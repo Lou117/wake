@@ -2,6 +2,7 @@
     <testsuites>
         <testsuite name="Wake">
             <file>tests/Configuration/ConfigurationTest.php</file>
+            <file>tests/Configuration/JSONFileLoaderTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
