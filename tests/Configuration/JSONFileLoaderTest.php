@@ -1,6 +1,6 @@
 <?php
 
-use Monolog\Test\TestCase;
+use PHPUnit\Framework\TestCase;
 use Lou117\Wake\Configuration\JSONFileLoader;
 
 class JSONFileLoaderTest extends TestCase
