@@ -1,5 +1,4 @@
 <?php
-
 use PHPUnit\Framework\TestCase;
 use Lou117\Wake\Container\Container;
 use Lou117\Wake\Container\NotFoundException;

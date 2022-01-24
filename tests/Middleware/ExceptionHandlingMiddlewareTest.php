@@ -5,7 +5,7 @@ use Monolog\Handler\TestHandler;
 use GuzzleHttp\Psr7\ServerRequest;
 use Lou117\Wake\Middleware\ExceptionHandlingMiddleware;
 
-require(__DIR__."/../TestExceptionRequestHandler.php");
+require_once(__DIR__."/../TestExceptionRequestHandler.php");
 
 class ExceptionHandlingMiddlewareTest extends TestCase
 {

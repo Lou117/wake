@@ -1,5 +1,4 @@
 <?php
-
 use PHPUnit\Framework\TestCase;
 use Lou117\Wake\Configuration\PHPFileLoader;
 

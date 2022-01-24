@@ -1,7 +1,8 @@
 <?php
-
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
+use Lou117\Wake\Router\PathAttribute as WakeRouterPath;
+use Lou117\Wake\Router\MethodAttribute as WakeRouterMethod;
 
 class TestController
 {
@@ -11,7 +12,7 @@ class TestController
 
 
     /**
-     * @param string $dependency
+     * @param string $constructor_dependency
      */
     public function __construct(string $constructor_dependency)
     {
@@ -19,9 +20,11 @@ class TestController
     }
 
     /**
-     * @param string $dependency
+     * @param string $method_dependency
      * @return ResponseInterface
      */
+    #[WakeRouterMethod(WakeRouterMethod::METHOD_GET)]
+    #[WakeRouterPath("/test")]
     public function test(string $method_dependency): ResponseInterface
     {
         $this->methodDependency = $method_dependency;

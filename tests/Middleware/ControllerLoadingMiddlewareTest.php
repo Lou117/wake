@@ -1,5 +1,4 @@
 <?php
-
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Psr7\ServerRequest;
 use Lou117\Wake\Router\Result\Route;
@@ -8,8 +7,8 @@ use Lou117\Wake\Container\Container;
 use Psr\Http\Message\ResponseInterface;
 use Lou117\Wake\Middleware\ControllerLoadingMiddleware;
 
-require(__DIR__."/../TestController.php");
-require(__DIR__."/../TestRequestHandler.php");
+require_once(__DIR__."/../TestController.php");
+require_once(__DIR__."/../TestRequestHandler.php");
 
 class ControllerLoadingMiddlewareTest extends TestCase
 {
