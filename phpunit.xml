@@ -8,6 +8,7 @@
             <!-- ResolverTest depends on ContainerTest -->
             <file>tests/Dependency/ResolverTest.php</file>
             <file>tests/Middleware/ControllerLoadingMiddlewareTest.php</file>
+            <file>tests/Middleware/ExceptionHandlingMiddlewareTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
