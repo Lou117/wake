@@ -19,6 +19,11 @@ class Route extends AbstractResult
     public readonly string $controller;
 
     /**
+     * @var string|null
+     */
+    public readonly string|null $name;
+
+    /**
      * @var string
      */
     public readonly string $path;
@@ -28,12 +33,14 @@ class Route extends AbstractResult
      * @param array $allowed_methods
      * @param string $path
      * @param string $controller
+     * @param string|null $name
      */
-    public function __construct(array $allowed_methods, string $path, string $controller)
+    public function __construct(array $allowed_methods, string $path, string $controller, string|null $name = null)
     {
         $this->allowedMethods = $allowed_methods;
         $this->controller = $controller;
         $this->path = $path;
+        $this->name = $name;
     }
 
     /**

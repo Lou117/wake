@@ -113,10 +113,15 @@ class Router
                         $path = "/{$path}";
                     }
 
+                    $name = array_key_exists(RouteNameAttribute::class, $attributes)
+                        ? $attributes[RouteNameAttribute::class]
+                        : null;
+
                     $routes[] = new Route(
                         $attributes[MethodAttribute::class]->getArguments(),
                         $path,
-                        "{$controllerFQCN}::{$reflectionMethod->getName()}"
+                        "{$controllerFQCN}::{$reflectionMethod->getName()}",
+                        $name
                     );
                 }
             }
