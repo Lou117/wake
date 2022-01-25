@@ -3,6 +3,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Lou117\Wake\Router\PathAttribute as WakeRouterPath;
 use Lou117\Wake\Router\MethodAttribute as WakeRouterMethod;
+use Lou117\Wake\Router\RouteNameAttribute as WakeRouterRouteName;
 
 class TestController
 {
@@ -25,6 +26,7 @@ class TestController
      */
     #[WakeRouterMethod(WakeRouterMethod::METHOD_GET)]
     #[WakeRouterPath("/test")]
+    #[WakeRouterRouteName("bar")]
     public function test(string $method_dependency): ResponseInterface
     {
         $this->methodDependency = $method_dependency;

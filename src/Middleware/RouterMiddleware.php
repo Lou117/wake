@@ -40,7 +40,8 @@ class RouterMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $result = $this->router->dispatch($request);
+        $routingTable = $this->router->buildRoutingTable();
+        $result = $this->router->dispatch($request, $routingTable);
 
         if ($result instanceof NotFound) {
             return new Response(404);
@@ -55,6 +56,7 @@ class RouterMiddleware implements MiddlewareInterface
         }
 
         $this->dependencyProvider->provide("wake_route", $result);
+        $this->dependencyProvider->provide("wake_routing_table", $routingTable);
         return $handler->handle($request);
     }
 }

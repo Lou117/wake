@@ -141,13 +141,14 @@ class Router
     }
 
     /**
-     * Returns dispatch result for given `$request`.
+     * Returns dispatch result for given `$request`, based on given `$routing_table`.
      *
      * @param RequestInterface $request
+     * @param RoutingTable $routing_table
      * @return AbstractResult
      * @throws \ReflectionException
      */
-    public function dispatch(RequestInterface $request): AbstractResult
+    public function dispatch(RequestInterface $request, RoutingTable $routing_table): AbstractResult
     {
         $function = "FastRoute\\simpleDispatcher";
         $params = [];
@@ -163,9 +164,8 @@ class Router
             ];
         }
 
-        $routes = $this->buildRoutingTable();
-        $fastRoute = $function(function(RouteCollector $r) use ($routes) {
-            foreach ($routes as $routeIndex => $routeObject) {
+        $fastRoute = $function(function(RouteCollector $r) use ($routing_table) {
+            foreach ($routing_table as $routeIndex => $routeObject) {
                 $r->addRoute($routeObject->allowedMethods, $routeObject->path, $routeIndex);
             }
         }, $params);
@@ -180,7 +180,7 @@ class Router
             return new MethodNotAllowedResult($result[1]);
         }
 
-        $route = $routes[$result[1]];
+        $route = $routing_table[$result[1]];
         return $route->setArguments($result[2]);
     }
 
