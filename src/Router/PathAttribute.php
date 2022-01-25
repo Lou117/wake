@@ -9,7 +9,7 @@ class PathAttribute
     /**
      * @var string
      */
-    protected readonly string $path;
+    public readonly string $path;
 
 
     /**

@@ -1,6 +1,7 @@
 <?php
 namespace Lou117\Wake\Router;
 
+use Attribute;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
@@ -92,12 +93,12 @@ class Router
 
             foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
                 /**
-                 * @var ReflectionAttribute[] $attributes
+                 * @var Attribute[] $attributes
                  */
                 $attributes = array_reduce(
                     $reflectionMethod->getAttributes(),
                     function(array $accumulator, ReflectionAttribute $attribute) {
-                        $accumulator[$attribute->getName()] = $attribute;
+                        $accumulator[$attribute->getName()] = $attribute->newInstance();
                         return $accumulator;
                     },
                     []
@@ -107,18 +108,31 @@ class Router
                     array_key_exists(PathAttribute::class, $attributes)
                     && array_key_exists(MethodAttribute::class, $attributes)
                 ) {
-                    $path = $prefix.$attributes[PathAttribute::class]->getArguments()[0];
+                    /**
+                     * @var PathAttribute $pathAttribute
+                     * @var MethodAttribute $methodAttribute
+                     */
+                    $pathAttribute = $attributes[PathAttribute::class];
+                    $methodAttribute = $attributes[MethodAttribute::class];
+
+                    $path = $prefix.$pathAttribute->path;
 
                     if (str_starts_with($path, "/") === false) {
                         $path = "/{$path}";
                     }
 
-                    $name = array_key_exists(RouteNameAttribute::class, $attributes)
-                        ? $attributes[RouteNameAttribute::class]
-                        : null;
+                    if (array_key_exists(RouteNameAttribute::class, $attributes)) {
+                        /**
+                         * @var RouteNameAttribute $routeNameAttribute
+                         */
+                        $routeNameAttribute = $attributes[RouteNameAttribute::class];
+                        $name = $routeNameAttribute->routeName;
+                    } else {
+                        $name = null;
+                    }
 
                     $routes[] = new Route(
-                        $attributes[MethodAttribute::class]->getArguments(),
+                        $methodAttribute->methods,
                         $path,
                         "{$controllerFQCN}::{$reflectionMethod->getName()}",
                         $name

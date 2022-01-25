@@ -157,7 +157,10 @@ class RouterTest extends TestCase
         ]);
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $result = $instance->dispatch(new ServerRequest("GET", "/test"));
+        $routingTable = $instance->buildRoutingTable();
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $result = $instance->dispatch(new ServerRequest("GET", "/test"), $routingTable);
         $this->assertInstanceOf(Route::class, $result);
 
         $this->assertIsArray($result->allowedMethods);
@@ -166,9 +169,13 @@ class RouterTest extends TestCase
 
         $this->assertEquals("/test", $result->path);
         $this->assertEquals("TestController::test", $result->controller);
+        $this->assertEquals("bar", $result->name);
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $result = $instance->dispatch(new ServerRequest("PUT", "/test/117"));
+        $result = $instance->dispatch(
+            new ServerRequest("PUT", "/test/117"),
+            $routingTable
+        );
         $this->assertInstanceOf(Route::class, $result);
 
         $this->assertArrayHasKey(0, $result->allowedMethods);
@@ -176,6 +183,7 @@ class RouterTest extends TestCase
 
         $this->assertEquals("/test/{id}", $result->path);
         $this->assertEquals("TestController::testWithArgument", $result->controller);
+        $this->assertNull($result->name);
 
         $this->assertIsArray($result->getArguments());
         $this->assertArrayHasKey("id", $result->getArguments());
@@ -198,8 +206,10 @@ class RouterTest extends TestCase
             ]
         ]);
 
+        $routingTable = $instance->buildRoutingTable();
+
         /** @noinspection PhpUnhandledExceptionInspection */
-        $result = $instance->dispatch(new ServerRequest("GET", "/test"));
+        $result = $instance->dispatch(new ServerRequest("GET", "/test"), $routingTable);
         $this->assertInstanceOf(Route::class, $result);
         $this->assertFileExists($fastRouteCacheFilepath);
 
@@ -207,7 +217,7 @@ class RouterTest extends TestCase
          * Dispatching request again, with FastRoute presumably fetching from its own cache.
          * @noinspection PhpUnhandledExceptionInspection
          */
-        $result = $instance->dispatch(new ServerRequest("GET", "/test"));
+        $result = $instance->dispatch(new ServerRequest("GET", "/test"), $routingTable);
         $this->assertInstanceOf(Route::class, $result);
     }
 
@@ -220,7 +230,10 @@ class RouterTest extends TestCase
         ]);
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $result = $instance->dispatch(new ServerRequest("GET", "/foo"));
+        $result = $instance->dispatch(
+            new ServerRequest("GET", "/foo"),
+            $instance->buildRoutingTable()
+        );
         $this->assertInstanceOf(NotFound::class, $result);
     }
 
@@ -233,7 +246,10 @@ class RouterTest extends TestCase
         ]);
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $result = $instance->dispatch(new ServerRequest("PATCH", "/test"));
+        $result = $instance->dispatch(
+            new ServerRequest("PATCH", "/test"),
+            $instance->buildRoutingTable()
+        );
         $this->assertInstanceOf(MethodNotAllowed::class, $result);
         $this->assertArrayHasKey(0, $result->allowedMethods);
         $this->assertEquals("GET", $result->allowedMethods[0]);

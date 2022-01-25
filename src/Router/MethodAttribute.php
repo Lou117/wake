@@ -16,7 +16,7 @@ class MethodAttribute
     /**
      * @var array
      */
-    protected readonly array $methods;
+    public readonly array $methods;
 
     /**
      * @param string ...$args

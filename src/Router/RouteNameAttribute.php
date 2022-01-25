@@ -9,7 +9,7 @@ class RouteNameAttribute
     /**
      * @var string
      */
-    protected readonly string $routeName;
+    public readonly string $routeName;
 
 
     /**

@@ -49,6 +49,7 @@ class RoutingTableTest extends TestCase
     }
 
     /**
+     * @depends testInstantiation
      * @return void
      */
     public function testCanOnlyAddRoute()
@@ -56,5 +57,38 @@ class RoutingTableTest extends TestCase
         $instance = new RoutingTable([]);
         $this->expectException(InvalidArgumentException::class);
         $instance[] = new stdClass();
+    }
+
+    public function testGenerateURL()
+    {
+        $routeName = "bar";
+        $instance = new RoutingTable([
+            new Route(["GET"], "/test/{id}/foo", "TestController::test", $routeName)
+        ]);
+
+        $this->assertEquals("/test/117/foo", $instance->generateURL($routeName, [
+            "id" => 117
+        ]));
+    }
+
+    public function testGenerateURLWithUnknownName()
+    {
+        $instance = new RoutingTable([
+            new Route(["GET"], "/test/{id}/foo", "TestController::test", "foo")
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $instance->generateURL("bar");
+    }
+
+    public function testGenerateURLWithNonUniqueName()
+    {
+        $instance = new RoutingTable([
+            new Route(["GET"], "/test/{id}/foo", "TestController::test", "foo"),
+            new Route(["PATCH"], "/test/{id}/bar", "TestController::test", "foo")
+        ]);
+
+        $this->expectException(RuntimeException::class);
+        $instance->generateURL("foo");
     }
 }

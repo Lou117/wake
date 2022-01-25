@@ -4,6 +4,7 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Lou117\Wake\Container\Container;
 use Lou117\Wake\Dependency\Provider;
 use Lou117\Wake\Router\Result\Route;
+use Lou117\Wake\Router\RoutingTable;
 use Lou117\Wake\Middleware\RouterMiddleware;
 use Lou117\Wake\Configuration\Configuration;
 
@@ -24,12 +25,17 @@ class RouterMiddlewareTest extends TestCase
             ]
         ]), $provider);
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         $response = $instance->process(
             new ServerRequest("GET", "/test"),
             new TestRequestHandler()
         );
 
         $this->assertEquals(418, $response->getStatusCode());
+
+        $this->assertTrue($container->has("wake_routing_table"));
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $this->assertInstanceOf(RoutingTable::class, $container->get("wake_routing_table"));
 
         $this->assertTrue($container->has("wake_route"));
         /** @noinspection PhpUnhandledExceptionInspection */

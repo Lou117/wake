@@ -9,11 +9,13 @@ class RouteTest extends TestCase
         $methods = ["GET", "PATCH", "DELETE"];
         $path = "/test";
         $controller = "TestController::test";
+        $name = "foo";
 
-        $route = new Route($methods, $path, $controller);
+        $route = new Route($methods, $path, $controller, $name);
         $this->assertEquals($methods, $route->allowedMethods);
         $this->assertEquals($path, $route->path);
         $this->assertEquals($controller, $route->controller);
+        $this->assertEquals($name, $route->name);
     }
 
     public function testArguments()
