@@ -4,6 +4,8 @@ namespace Lou117\Wake;
 use LogicException;
 use Monolog\Logger;
 use ReflectionClass;
+use ReflectionMethod;
+use RuntimeException;
 use GuzzleHttp\Psr7\ServerRequest;
 use Lou117\Wake\Container\Container;
 use Lou117\Wake\Dependency\Resolver;
@@ -43,9 +45,20 @@ class Kernel implements RequestHandlerInterface
      * @return Configuration
      * @throws \Lou117\Wake\Container\NotFoundException
      */
-    protected function getConfiguration(): Configuration
+    public function getConfiguration(): Configuration
     {
         return $this->container->get(self::CONTAINER_ID_CONFIGURATION);
+    }
+
+    /**
+     * Returns Wake kernel logger.
+     *
+     * @return Logger
+     * @throws \Lou117\Wake\Container\NotFoundException
+     */
+    public function getLogger(): Logger
+    {
+        return $this->container->get(self::CONTAINER_ID_LOGGER);
     }
 
     /**
@@ -60,15 +73,20 @@ class Kernel implements RequestHandlerInterface
         $this->middlewareSequenceIndex++;
 
         $reflectionClass = new ReflectionClass($middlewareFQCN);
-        $reflectionMethod = $reflectionClass->getConstructor();
-        $dependencyResolver = new Resolver($this->container);
+        $reflectedConstructor = $reflectionClass->getConstructor();
 
-        /**
-         * @var $middleware MiddlewareInterface
-         */
-        $middleware = $reflectionClass->newInstance(...$dependencyResolver->resolve(
-            $reflectionMethod->getParameters()
-        ));
+        if ($reflectedConstructor instanceof ReflectionMethod) {
+            $dependencyResolver = new Resolver($this->container);
+
+            /**
+             * @var MiddlewareInterface $middleware
+             */
+            $middleware = $reflectionClass->newInstance(...$dependencyResolver->resolve(
+                $reflectedConstructor->getParameters()
+            ));
+        } else {
+            $middleware = new $middlewareFQCN();
+        }
 
         if (($middleware instanceof MiddlewareInterface) === false) {
             throw new LogicException("Middleware {$middlewareFQCN} must implements PSR-11 MiddlewareInterface");
@@ -102,6 +120,10 @@ class Kernel implements RequestHandlerInterface
 
         if (is_null($request)) {
             $request = ServerRequest::fromGlobals();
+        }
+
+        if (empty($this->getConfiguration()->getMiddlewareSequence())) {
+            throw new RuntimeException("Middleware sequence cannot be empty");
         }
 
         return $this->handle($request);

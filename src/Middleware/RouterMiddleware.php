@@ -15,6 +15,10 @@ use Lou117\Wake\Router\Result\MethodNotAllowed;
 
 class RouterMiddleware implements MiddlewareInterface
 {
+    const CONTAINER_ID_ROUTE = "wake_route";
+    const CONTAINER_ID_ROUTING_TABLE = "wake_routing_table";
+
+
     /**
      * @var Provider
      */
@@ -55,8 +59,8 @@ class RouterMiddleware implements MiddlewareInterface
             );
         }
 
-        $this->dependencyProvider->provide("wake_route", $result);
-        $this->dependencyProvider->provide("wake_routing_table", $routingTable);
+        $this->dependencyProvider->provide(self::CONTAINER_ID_ROUTE, $result);
+        $this->dependencyProvider->provide(self::CONTAINER_ID_ROUTING_TABLE, $routingTable);
         return $handler->handle($request);
     }
 }

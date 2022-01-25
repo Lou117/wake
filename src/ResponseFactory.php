@@ -56,7 +56,7 @@ class ResponseFactory
 
         if (strlen($encodedBody) > 0) {
             $response = $response
-                ->withHeader(self::HTTP_HEADER_CONTENT_TYPE, "application/json; charset=utf-8")
+                ->withHeader(self::HTTP_HEADER_CONTENT_TYPE, "application/json;charset=utf-8")
                 ->withBody(Utils::streamFor($encodedBody));
         }
 
