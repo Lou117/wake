@@ -1,8 +1,11 @@
 <?php
 use Lou117\Wake\Router\Router;
 use PHPUnit\Framework\TestCase;
+use GuzzleHttp\Psr7\ServerRequest;
 use Lou117\Wake\Router\Result\Route;
 use Lou117\Wake\Router\RoutingTable;
+use Lou117\Wake\Router\Result\NotFound;
+use Lou117\Wake\Router\Result\MethodNotAllowed;
 
 require_once(__DIR__."/../TestController.php");
 
@@ -62,7 +65,7 @@ class RouterTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         new Router([
-            "controllerFQCNArray" => "toto"
+            "controllerFQCNArray" => "foo"
         ]);
     }
 
@@ -82,7 +85,7 @@ class RouterTest extends TestCase
             "controllerFQCNArray" => [
                 "TestController"
             ],
-            "prefix" => "/toto"
+            "prefix" => "/foo"
         ]);
 
         /** @noinspection PhpUnhandledExceptionInspection */
@@ -98,12 +101,12 @@ class RouterTest extends TestCase
      */
     protected function testRoutingTable(RoutingTable $routes)
     {
-        $this->assertCount(1, $routes);
+        $this->assertCount(2, $routes);
         $this->assertArrayHasKey(0, $routes);
 
         $route = $routes[0];
         $this->assertInstanceOf(Route::class, $route);
-        $this->assertEquals("/toto/test", $route->path);
+        $this->assertEquals("/foo/test", $route->path);
 
         $this->assertCount(1, $route->allowedMethods);
         $this->assertArrayHasKey(0, $route->allowedMethods);
@@ -121,7 +124,7 @@ class RouterTest extends TestCase
             "controllerFQCNArray" => [
                 "TestController"
             ],
-            "prefix" => "/toto",
+            "prefix" => "/foo",
             "cache" => [
                 "enabled" => true,
                 "fastRouteCacheFilepath" => $fastRouteCacheFilepath,
@@ -140,7 +143,99 @@ class RouterTest extends TestCase
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $routingTable = $instance->buildRoutingTable();
+        $this->assertInstanceOf(RoutingTable::class, $routingTable);
         $this->assertTrue($routingTable->fromCache);
         $this->testRoutingTable($routingTable);
+    }
+
+    public function testDispatchWithNoCache()
+    {
+        $instance = new Router([
+            "controllerFQCNArray" => [
+                "TestController"
+            ]
+        ]);
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $result = $instance->dispatch(new ServerRequest("GET", "/test"));
+        $this->assertInstanceOf(Route::class, $result);
+
+        $this->assertIsArray($result->allowedMethods);
+        $this->assertArrayHasKey(0, $result->allowedMethods);
+        $this->assertEquals("GET", $result->allowedMethods[0]);
+
+        $this->assertEquals("/test", $result->path);
+        $this->assertEquals("TestController::test", $result->controller);
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $result = $instance->dispatch(new ServerRequest("PUT", "/test/117"));
+        $this->assertInstanceOf(Route::class, $result);
+
+        $this->assertArrayHasKey(0, $result->allowedMethods);
+        $this->assertEquals("PUT", $result->allowedMethods[0]);
+
+        $this->assertEquals("/test/{id}", $result->path);
+        $this->assertEquals("TestController::testWithArgument", $result->controller);
+
+        $this->assertIsArray($result->getArguments());
+        $this->assertArrayHasKey("id", $result->getArguments());
+        $this->assertEquals("117", $result->getArguments()["id"]);
+    }
+
+    public function testDispatchWithCache()
+    {
+        $fastRouteCacheFilepath = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid();
+        $tableCacheFilepath = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid();
+
+        $instance = new Router([
+            "controllerFQCNArray" => [
+                "TestController"
+            ],
+            "cache" => [
+                "enabled" => true,
+                "fastRouteCacheFilepath" => $fastRouteCacheFilepath,
+                "tableCacheFilepath" => $tableCacheFilepath
+            ]
+        ]);
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $result = $instance->dispatch(new ServerRequest("GET", "/test"));
+        $this->assertInstanceOf(Route::class, $result);
+        $this->assertFileExists($fastRouteCacheFilepath);
+
+        /**
+         * Dispatching request again, with FastRoute presumably fetching from its own cache.
+         * @noinspection PhpUnhandledExceptionInspection
+         */
+        $result = $instance->dispatch(new ServerRequest("GET", "/test"));
+        $this->assertInstanceOf(Route::class, $result);
+    }
+
+    public function testDispatchWithNotFoundExpected()
+    {
+        $instance = new Router([
+            "controllerFQCNArray" => [
+                "TestController"
+            ]
+        ]);
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $result = $instance->dispatch(new ServerRequest("GET", "/foo"));
+        $this->assertInstanceOf(NotFound::class, $result);
+    }
+
+    public function testDispatchWithMethodNotAllowedExpected()
+    {
+        $instance = new Router([
+            "controllerFQCNArray" => [
+                "TestController"
+            ]
+        ]);
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $result = $instance->dispatch(new ServerRequest("PATCH", "/test"));
+        $this->assertInstanceOf(MethodNotAllowed::class, $result);
+        $this->assertArrayHasKey(0, $result->allowedMethods);
+        $this->assertEquals("GET", $result->allowedMethods[0]);
     }
 }

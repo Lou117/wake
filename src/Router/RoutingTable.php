@@ -44,7 +44,7 @@ class RoutingTable implements Iterator, Countable, ArrayAccess
 
     public function current(): Route|bool
     {
-        return $this->routes[$this->index];
+        return $this->offsetGet($this->index);
     }
 
     public function key(): int|null

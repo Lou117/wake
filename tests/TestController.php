@@ -34,4 +34,15 @@ class TestController
             ->withAddedHeader("X-Constructor-Dependency", $this->constructorDependency)
             ->withAddedHeader("X-Method-Dependency", $this->methodDependency);
     }
+
+    /**
+     * @return ResponseInterface
+     */
+    #[WakeRouterMethod(WakeRouterMethod::METHOD_PUT)]
+    #[WakeRouterPath("/test/{id}")]
+    public function testWithArgument(): ResponseInterface
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return new Response(418);
+    }
 }
