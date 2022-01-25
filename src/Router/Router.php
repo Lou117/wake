@@ -67,17 +67,18 @@ class Router
     /**
      * Returns Wake router routing table.
      *
-     * @return Route[]
+     * @return RoutingTable
      * @throws \ReflectionException
      */
-    public function buildRoutingTable(): array
+    public function buildRoutingTable(): RoutingTable
     {
         if (
             $this->configuration["cache"]["enabled"]
             && file_exists($this->configuration["cache"]["tableCacheFilepath"])
             && is_readable($this->configuration["cache"]["tableCacheFilepath"])
         ) {
-            return unserialize(file_get_contents($this->configuration["cache"]["tableCacheFilepath"]));
+            $routes = unserialize(file_get_contents($this->configuration["cache"]["tableCacheFilepath"]));
+            return new RoutingTable($routes, true);
         }
 
         /**
@@ -125,10 +126,13 @@ class Router
             $this->configuration["cache"]["enabled"]
             && is_writable(dirname($this->configuration["cache"]["tableCacheFilepath"]))
         ) {
-            file_put_contents($this->configuration["cache"]["tableCacheFilepath"], serialize($routes));
+            file_put_contents(
+                $this->configuration["cache"]["tableCacheFilepath"],
+                serialize($routes)
+            );
         }
 
-        return $routes;
+        return new RoutingTable($routes);
     }
 
     /**

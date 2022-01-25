@@ -2,6 +2,7 @@
 use Lou117\Wake\Router\Router;
 use PHPUnit\Framework\TestCase;
 use Lou117\Wake\Router\Result\Route;
+use Lou117\Wake\Router\RoutingTable;
 
 require_once(__DIR__."/../TestController.php");
 
@@ -85,15 +86,17 @@ class RouterTest extends TestCase
         ]);
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $routes = $instance->buildRoutingTable();
-        $this->testRoutingTable($routes);
+        $routingTable = $instance->buildRoutingTable();
+        $this->assertInstanceOf(RoutingTable::class, $routingTable);
+        $this->assertFalse($routingTable->fromCache);
+        $this->testRoutingTable($routingTable);
     }
 
     /**
-     * @param Route[] $routes
+     * @param RoutingTable $routes
      * @return void
      */
-    protected function testRoutingTable(array $routes)
+    protected function testRoutingTable(RoutingTable $routes)
     {
         $this->assertCount(1, $routes);
         $this->assertArrayHasKey(0, $routes);
@@ -132,9 +135,12 @@ class RouterTest extends TestCase
         $this->assertFileIsReadable($tableCacheFilepath);
 
         $routes = unserialize(file_get_contents($tableCacheFilepath));
-        $this->testRoutingTable($routes);
+        $routingTable = new RoutingTable($routes);
+        $this->testRoutingTable($routingTable);
 
-        // Re-building routing table, presumably from cache
-        $this->testRoutingTable($instance->buildRoutingTable());
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $routingTable = $instance->buildRoutingTable();
+        $this->assertTrue($routingTable->fromCache);
+        $this->testRoutingTable($routingTable);
     }
 }
