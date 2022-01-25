@@ -21,46 +21,47 @@ class Router
     /**
      * @var array
      */
-    protected array $configuration;
+    public readonly array $configuration;
 
     /**
      * @var string[]
      */
-    protected array $controllers = [];
+    public readonly array $controllers;
 
 
     public function __construct(array $configuration)
     {
-        $this->configuration = array_replace_recursive(
+        $sanitizedConfiguration = array_replace_recursive(
             self::getDefaultConfiguration(),
             $configuration
         );
 
-        if (is_array($this->configuration["controllerFQCNArray"]) === false) {
+        if (is_array($sanitizedConfiguration["controllerFQCNArray"]) === false) {
             throw new RuntimeException(self::CONFIGURATION_DIRECTIVE.".controllerFQCNArray is not an array");
         }
 
-        foreach ($this->configuration["controllerFQCNArray"] as $controllerFQCN) {
-            if (is_string($controllerFQCN) === false) {
+        if ($sanitizedConfiguration["prefix"] !== null) {
+            $prefix = trim($sanitizedConfiguration["prefix"]);
+            $sanitizedConfiguration["prefix"] = empty($prefix) ? null : $prefix;
+        }
+
+        $sanitizedConfiguration["cache"]["enabled"] = (bool) $sanitizedConfiguration["cache"]["enabled"];
+
+        foreach (["fastRouteCacheFilepath", "tableCacheFilepath"] as $key) {
+            if ($sanitizedConfiguration["cache"][$key] !== null) {
+                $filepath = trim((string) $sanitizedConfiguration["cache"][$key]);
+                $sanitizedConfiguration["cache"][$key] = empty($filepath) ? null : $filepath;
+            }
+        }
+
+        $this->configuration = $sanitizedConfiguration;
+        $this->controllers = array_map(function($candidate) {
+            if (is_string($candidate) === false) {
                 throw new RuntimeException("One of ". self::CONFIGURATION_DIRECTIVE.".controllerFQCNArray values is not a string");
             }
 
-            $this->controllers[] = $controllerFQCN;
-        }
-
-        if ($this->configuration["prefix"] !== null) {
-            $prefix = trim($this->configuration["prefix"]);
-            $this->configuration["prefix"] = empty($prefix) ? null : $prefix;
-        }
-
-        $this->configuration["cache"]["enabled"] = (bool) $this->configuration["cache"]["enabled"];
-
-        foreach (["fastRouteCacheFilepath", "tableCacheFilepath"] as $key) {
-            if ($this->configuration["cache"][$key] !== null) {
-                $filepath = trim((string) $this->configuration["cache"][$key]);
-                $this->configuration["cache"][$key] = empty($filepath) ? null : $filepath;
-            }
-        }
+            return $candidate;
+        }, $this->configuration["controllerFQCNArray"]);
     }
 
     /**
@@ -69,7 +70,7 @@ class Router
      * @return Route[]
      * @throws \ReflectionException
      */
-    protected function buildRoutingTable(): array
+    public function buildRoutingTable(): array
     {
         if (
             $this->configuration["cache"]["enabled"]

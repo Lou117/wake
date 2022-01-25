@@ -10,6 +10,10 @@
             <file>tests/Middleware/ControllerLoadingMiddlewareTest.php</file>
             <file>tests/Middleware/ExceptionHandlingMiddlewareTest.php</file>
             <file>tests/Middleware/RouterMiddlewareTest.php</file>
+            <file>tests/Router/Result/MethodNotAllowedTest.php</file>
+            <file>tests/Router/Result/NotFoundTest.php</file>
+            <file>tests/Router/Result/RouteTest.php</file>
+            <file>tests/Router/RouterTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
