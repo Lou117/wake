@@ -6,12 +6,12 @@ use Psr\Http\Message\ResponseInterface;
 
 class ResponseFactoryTest extends TestCase
 {
-    public function testCreateHtmlResponse()
+    public function testCreateHTMLResponse()
     {
         $code = 201;
         $body = "test";
 
-        $response = ResponseFactory::createHtmlResponse($body, $code);
+        $response = ResponseFactory::createHTMLResponse($body, $code);
         $this->assertInstanceOf(ResponseInterface::class, $response);
 
         $this->assertEquals(
@@ -22,25 +22,25 @@ class ResponseFactoryTest extends TestCase
         $this->assertEquals($code, $response->getStatusCode());
     }
 
-    public function testCreateHtmlResponseWithEmptyString()
+    public function testCreateHTMLResponseWithEmptyString()
     {
-        $response = ResponseFactory::createTextResponse("\n\t  ");
+        $response = ResponseFactory::createHTMLResponse("\n\t  ");
         $this->assertInstanceOf(ResponseInterface::class, $response);
 
         $this->assertFalse($response->hasHeader(ResponseFactory::HTTP_HEADER_CONTENT_TYPE));
         $this->assertEmpty($response->getBody()->read($response->getBody()->getSize()));
     }
 
-    public function testCreateJsonResponse()
+    public function testCreateJSONResponse()
     {
         $code = 201;
         $json = ["test" => "test"];
 
-        $response = ResponseFactory::createJsonResponse($json, $code);
+        $response = ResponseFactory::createJSONResponse($json, $code);
         $this->assertInstanceOf(ResponseInterface::class, $response);
 
         $this->assertEquals(
-            "application/json; charset=utf-8",
+            "application/json;charset=utf-8",
             $response->getHeaderLine(ResponseFactory::HTTP_HEADER_CONTENT_TYPE)
         );
         $this->assertEquals(
@@ -50,11 +50,11 @@ class ResponseFactoryTest extends TestCase
         $this->assertEquals($code, $response->getStatusCode());
     }
 
-    public function testCreateJsonResponseWithInvalidJson()
+    public function testCreateJSONResponseWithInvalidJson()
     {
         $resource = tmpfile();
         $this->expectException(InvalidArgumentException::class);
-        ResponseFactory::createJsonResponse($resource);
+        ResponseFactory::createJSONResponse($resource);
     }
 
     public function testCreateTextResponse()

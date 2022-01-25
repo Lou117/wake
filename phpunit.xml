@@ -15,6 +15,7 @@
             <file>tests/Router/Result/RouteTest.php</file>
             <file>tests/Router/RouterTest.php</file>
             <file>tests/KernelTest.php</file>
+            <file>tests/ResponseFactoryTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

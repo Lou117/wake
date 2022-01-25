@@ -88,7 +88,7 @@ class KernelTest extends TestCase
         ]);
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        $response = $instance->run(new Request("GET", "/test"));
+        $response = $instance->run(new ServerRequest("GET", "/test"));
         $this->assertEquals("foo", $response->getHeaderLine("X-Middleware-1"));
 
         $this->assertEquals(418, $response->getStatusCode());
