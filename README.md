@@ -24,3 +24,5 @@ composer require lou117/wake
 - [Quickstart](docs/quickstart.md)
 - [Configuration](docs/configuration.md)
 - [About middlewares](docs/middlewares.md)
+- [Dependencies management](docs/dependencies_management.md)
+- [Integrated router](docs/router.md)

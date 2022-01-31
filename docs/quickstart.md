@@ -7,6 +7,7 @@ Your project entry point (or "front-controller") will instantiate Wake `Kernel` 
 use Lou117\Wake\Kernel;
 use Lou117\Wake\ResponseFactory;
 use GuzzleHttp\Psr7\ServerRequest;
+use Lou117\Wake\Configuration\Configuration;
 use Lou117\Wake\Configuration\JSONFileLoader;
 
 require("./vendor/autoload.php");
