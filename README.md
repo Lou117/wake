@@ -8,9 +8,9 @@ Wake is the assembly of several well-known libraries:
 - [FastRoute](https://github.com/nikic/FastRoute) (also used by Slim framework, Laravel Lumen framework or PHPMyAdmin project);
 - [Monolog](https://github.com/Seldaek/monolog) (also used by Laravel and Symfony frameworks).
 
-In addition to PSR-7, Wake uses PSR-15 (HTTP Server Request Handlers) and PSR-11 (Container Interface) Standards 
-Recommendations, ensuring interoperability at most levels and smoothing learning curve for developers who want to give 
-**Wake** its chance.
+In addition to PSR-7, Wake uses [PSR-15](https://www.php-fig.org/psr/psr-15/) (HTTP Server Request Handlers) and 
+[PSR-11](https://www.php-fig.org/psr/psr-11/) (Container Interface) Standards Recommendations, ensuring interoperability 
+at most levels and smoothing learning curve for developers who want to give **Wake** its chance.
 
 **Wake** has been written from the ground-up with PHP 8.1, ensuring the cleanest code, the best performance and a 
 lasting support from PHP Foundation.
