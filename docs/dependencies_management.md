@@ -84,7 +84,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Lou117\Wake\Dependency\Provider as DependencyProvider;
 
-class YourMiddleware extends \Psr\Http\Server\MiddlewareInterface
+class YourMiddleware extends MiddlewareInterface
 {
     protected DependencyProvider $dependencyProvider;
 
@@ -98,6 +98,62 @@ class YourMiddleware extends \Psr\Http\Server\MiddlewareInterface
     {
         $this->dependencyProvider->provide("my_dependency", "foobar");
         // You can now use `$my_dependency` as a parameter name wherever you need dependency injection
+        return $handler->handle($request);
+    }
+}
+```
+
+## Other "special" parameter names
+### `$wake_configuration`
+When using `$wake_configuration` as parameter name for a method that will take advantage of `Dependency\Resolver` class 
+capabilities, you'll be provided with current Wake configuration array.
+```php
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class YourMiddleware extends MiddlewareInterface
+{
+    protected array $wakeConfiguration;
+
+
+    public function __construct(array $wake_configuration)
+    {
+        $this->wakeConfiguration = $wake_configuration;
+    }
+    
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler)
+    {
+        // Will dump current Wake configuration
+        var_dump($this->wakeConfiguration);
+        return $handler->handle($request);
+    }
+}
+```
+
+### `$wake_logger`
+When using `$wake_logger` as parameter name for a method that will take advantage of `Dependency\Resolver` class 
+capabilities, you'll be provided with Wake kernel logger.
+```php
+use Monolog\Logger;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class YourMiddleware extends MiddlewareInterface
+{
+    protected Logger $wakeLogger;
+
+
+    public function __construct(array $wake_logger)
+    {
+        $this->wakeLogger = $wake_logger;
+    }
+    
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler)
+    {
+        // Will dump Wake logger instance
+        var_dump($this->wakeLogger);
         return $handler->handle($request);
     }
 }
