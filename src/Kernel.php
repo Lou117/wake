@@ -20,6 +20,7 @@ class Kernel implements RequestHandlerInterface
 {
     const CONTAINER_ID_CONFIGURATION = "wake_configuration";
     const CONTAINER_ID_LOGGER = "wake_logger";
+    const CONTAINER_ID_REQUEST = "wake_request";
 
 
     /**
@@ -121,6 +122,8 @@ class Kernel implements RequestHandlerInterface
         if (is_null($request)) {
             $request = ServerRequest::fromGlobals();
         }
+
+        $this->container->set(self::CONTAINER_ID_REQUEST, $request);
 
         if (empty($this->getConfiguration()->getMiddlewareSequence())) {
             throw new RuntimeException("Middleware sequence cannot be empty");
