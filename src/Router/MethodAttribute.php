@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 namespace Lou117\Wake\Router;
 
 use Attribute;
 use InvalidArgumentException;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class MethodAttribute
+readonly class MethodAttribute
 {
     const METHOD_DELETE = "DELETE";
     const METHOD_GET = "GET";
@@ -16,7 +16,7 @@ class MethodAttribute
     /**
      * @var array
      */
-    public readonly array $methods;
+    public array $methods;
 
     /**
      * @param string ...$args

@@ -1,15 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 namespace Lou117\Wake\Router;
 
 use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class PathAttribute
+readonly class PathAttribute
 {
     /**
      * @var string
      */
-    public readonly string $path;
+    public string $path;
 
 
     /**

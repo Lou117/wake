@@ -1,15 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 namespace Lou117\Wake\Router;
 
 use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class RouteNameAttribute
+readonly class RouteNameAttribute
 {
     /**
      * @var string
      */
-    public readonly string $routeName;
+    public string $routeName;
 
 
     /**

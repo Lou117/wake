@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Lou117\Wake\Dependency;
 
 use Lou117\Wake\Container\Container;

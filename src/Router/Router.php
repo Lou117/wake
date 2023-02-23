@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Lou117\Wake\Router;
 
 use Attribute;
@@ -14,7 +14,7 @@ use Lou117\Wake\Router\Result\AbstractResult;
 use Lou117\Wake\Router\Result\NotFound as NotFoundResult;
 use Lou117\Wake\Router\Result\MethodNotAllowed as MethodNotAllowedResult;
 
-class Router
+readonly class Router
 {
     const CONFIGURATION_DIRECTIVE = "wake-router";
 
@@ -22,12 +22,12 @@ class Router
     /**
      * @var array
      */
-    public readonly array $configuration;
+    public array $configuration;
 
     /**
      * @var string[]
      */
-    public readonly array $controllers;
+    public array $controllers;
 
 
     public function __construct(array $configuration)

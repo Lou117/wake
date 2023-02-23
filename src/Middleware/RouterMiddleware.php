@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Lou117\Wake\Middleware;
 
 use GuzzleHttp\Psr7\Response;
